@@ -1,53 +1,45 @@
 import React from 'react'
 import "../App.css"
 import { Link, useNavigate } from 'react-router-dom'
+
 export default function LandingPage() {
-
-
     const router = useNavigate();
 
     return (
         <div className='landingPageContainer'>
-            <nav>
+            <header className='landingHeader'>
                 <div className='navHeader'>
-                    <h2>Sync Room</h2>
+                    <h2>Sync<span>Room</span></h2>
                 </div>
-                <div className='navlist'>
-                    <p onClick={() => {
-                        router("/aljk23")
-                    }}>Join as Guest</p>
-                    <p onClick={() => {
-                        router("/auth")
+                <nav className='navlist'>
+                    <span className='navLink' onClick={() => {
+                        const randomCode = Math.random().toString(36).substring(2, 8);
+                        router(`/meet/${randomCode}`);
+                    }}>Join as Guest</span>
+                    <span className='navLink' onClick={() => router("/auth")}>Register</span>
+                    <button className='loginBtn' onClick={() => router("/auth")}>Login</button>
+                </nav>
+            </header>
 
-                    }}>Register</p>
-                    <div onClick={() => {
-                        router("/auth")
-
-                    }} role='button'>
-                        <p>Login</p>
+            <main className="landingMainContainer">
+                <div className="heroTextSection">
+                    <h1 className="heroTitle">
+                        Connect with your <br />
+                        <span className="gradientText">Loved Ones</span>
+                    </h1>
+                    <p className="heroSubtitle">
+                        Bridge any distance with SyncRoom. High-definition, low-latency video meetings built for smooth communication and real-time collaboration.
+                    </p>
+                    <div className="ctaContainer">
+                        <Link to="/auth" className="ctaButton">Get Started</Link>
                     </div>
                 </div>
-            </nav>
-
-
-            <div className="landingMainContainer">
-                <div>
-                    <h1><span style={{ color: "#FF9839" }}>Connect</span> with your loved Ones</h1>
-
-                    <p>Cover a distance by Sync Room</p>
-                    <div role='button'>
-                        <Link to={"/auth"}>Get Started</Link>
+                <div className="heroImageSection">
+                    <div className="imageGlowWrapper">
+                        <img src="/meeting_hero.png" alt="SyncRoom Video Meeting" className="heroImage" />
                     </div>
                 </div>
-                <div>
-
-                    <img src="/mobile.png" alt="" />
-
-                </div>
-            </div>
-
-
-
+            </main>
         </div>
     )
 }

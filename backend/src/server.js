@@ -1,7 +1,9 @@
 import dns from 'dns'
 
-// Force Node to use Google DNS
-dns.setServers(['8.8.8.8', '8.8.4.4'])
+if (process.env.OVERRIDE_DNS === "true") {
+    // Force Node to use Google DNS for local troubleshooting
+    dns.setServers(['8.8.8.8', '8.8.4.4']);
+}
 
 import "dotenv/config";
 import http from "http";

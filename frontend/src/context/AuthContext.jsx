@@ -1,6 +1,6 @@
 import axios from "axios";
 import httpStatus from "http-status";
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import server from "../environment";
 
@@ -11,13 +11,32 @@ const client = axios.create({
     baseURL: `${server}/api/v1/users`
 })
 
+client.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("name");
+            localStorage.removeItem("username");
+            window.location.href = "/auth";
+        }
+        return Promise.reject(error);
+    }
+);
+
 
 export const AuthProvider = ({ children }) => {
 
-    const authContext = useContext(AuthContext);
-
-
-    const [userData, setUserData] = useState(authContext);
+    const [userData, setUserData] = useState(() => {
+        try {
+            return {
+                name: localStorage.getItem("name") || "",
+                username: localStorage.getItem("username") || ""
+            };
+        } catch {
+            return { name: "", username: "" };
+        }
+    });
 
 
     const router = useNavigate();
@@ -32,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
 
             if (request.status === httpStatus.CREATED) {
-                return request.data.message;
+                return "Registration successful! Please login.";
             }
         } catch (err) {
             throw err;
@@ -51,6 +70,12 @@ export const AuthProvider = ({ children }) => {
 
             if (request.status === httpStatus.OK) {
                 localStorage.setItem("token", request.data.token);
+                localStorage.setItem("name", request.data.name);
+                localStorage.setItem("username", request.data.username);
+                setUserData({
+                    name: request.data.name,
+                    username: request.data.username
+                });
                 router("/home")
             }
         } catch (err) {

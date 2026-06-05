@@ -19,6 +19,10 @@ const withAuth = (WrappedComponent ) => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
 
+        if (!isAuthenticated()) {
+            return null;
+        }
+
         return <WrappedComponent {...props} />
     }
 
